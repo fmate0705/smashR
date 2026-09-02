@@ -1,0 +1,91 @@
+frameworkVersion: 2
+project:
+  name: smashr
+  type: landing-page
+  created: 2026-09-02T16:39:18.212Z
+  cefVersion: 0.1.0
+engines:
+  - accessibility
+  - ai-seo
+  - architecture
+  - components
+  - core
+  - deployment
+  - design
+  - docker
+  - experience
+  - legal
+  - motion
+  - performance
+  - platform
+  - security
+  - seo
+  - validation
+skills:
+  - animate
+  - emil-design-eng
+  - frontend-design
+  - impeccable
+  - taste
+  - uiux-pro-max
+mcp:
+  - chrome-devtools
+  - higgsfield
+metadata:
+  description: 'SmashR premium smashburger etterem Budapesten. Magyar nyelvu
+    bemutatkozo weboldal: fooldal, rolunk, etlap, kapcsolat es SmashR Experience
+    markaoldal. Friss marhahus, smash technika, street food kultura, Foodora es
+    Wolt rendeles, terkep es utvonaltervezes.'
+  framework: nextjs
+  language: typescript
+  packageManager: npm
+  styling: tailwind
+  uiLibrary: shadcn
+  animation: gsap
+  database: none
+  orm: none
+  authentication: none
+  cms: none
+docker:
+  enabled: true
+  port: 3000
+features:
+  adminPanel: false
+  blog: false
+  commerce: false
+  legalPages: true
+  aiSeo: true
+  githubActions: true
+deployment:
+  target: vercel
+languages:
+  primary: en
+  additional: []
+  country: United States
+generatedFiles:
+  - .cef/consent.json
+  - .cef/design/impeccable.md
+  - .cef/design/scroll-motion.md
+  - .cef/manifest.yaml
+  - .cef/memory.md
+  - .cef/project.json
+  - .cef/runtime.json
+  - .editorconfig
+  - .env
+  - .env.example
+  - .github/workflows/ci.yml
+  - .gitignore
+  - .prettierignore
+  - .prettierrc.json
+  - CLAUDE.md
+  - Dockerfile
+  - README.md
+  - content/legal/cookie-policy.md
+  - content/legal/impressum.md
+  - content/legal/privacy-policy.md
+  - content/legal/terms.md
+  - docker-compose.yml
+  - eslint.config.js
+  - package.json
+  - public/llms.txt
+  - tsconfig.json
