@@ -1,0 +1,22 @@
+# Keep the build context to what the image actually needs. Everything here is either
+# reproducible (node_modules, .next), local-only (.qa, .claude), or the raw material the
+# committed assets in public/ were already built from (assets/).
+node_modules
+.next
+out
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+.cef
+.claude
+.qa
+assets
+docs
+tests
+npm-debug.log*
+Dockerfile
+.dockerignore
+README.md
+CLAUDE.md

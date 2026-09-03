@@ -1,0 +1,42 @@
+{
+  "projectName": "smashr",
+  "reviewedAt": "2026-09-03T12:47:53.592Z",
+  "overall": 90,
+  "readiness": 87,
+  "recommendation": "not-ready",
+  "requiredPassed": false,
+  "byGate": {
+    "architecture": 100,
+    "design": 100,
+    "impeccable": 24,
+    "motion": 84,
+    "accessibility": 100,
+    "performance": 100,
+    "seo": 95,
+    "security": 100,
+    "content": 59,
+    "brand": 99,
+    "legal": 85,
+    "consent": 100,
+    "docker": 100,
+    "testing": 100,
+    "documentation": 100
+  },
+  "gateStatus": {
+    "architecture": "pass",
+    "design": "pass",
+    "impeccable": "warn",
+    "motion": "warn",
+    "accessibility": "pass",
+    "performance": "pass",
+    "seo": "warn",
+    "security": "pass",
+    "content": "fail",
+    "brand": "pass",
+    "legal": "warn",
+    "consent": "pass",
+    "docker": "pass",
+    "testing": "pass",
+    "documentation": "pass"
+  }
+}

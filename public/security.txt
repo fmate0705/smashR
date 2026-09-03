@@ -1,0 +1,4 @@
+# Replace the contact below with a monitored security address before launch.
+Contact: mailto:security@smashr.hu
+Preferred-Languages: en
+Expires: 2027-01-01T00:00:00.000Z

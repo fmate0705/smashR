@@ -1,0 +1,16 @@
+/* TEAM */
+  Étterem: SmashR — Smash R Burger
+  Helyszín: 1239 Budapest, Bevásárló u. 2., Magyarország
+  Telefon: +36 20 447 0900
+
+/* SITE */
+  Készítette: Klivo — https://klivo.hu
+  Nyelv: magyar (hu-HU)
+  Keretrendszer: Next.js (App Router), TypeScript, Tailwind CSS
+  Animáció: GSAP + ScrollTrigger
+  Betűtípus: Archivo Black (display), Archivo (szöveg)
+  Üzemeltetés: Docker, Next.js standalone
+
+/* NOTE */
+  Az étlap adatai és termékfotói a SmashR saját foodora és Wolt oldaláról származnak.
+  Az ételfotók az étterem tulajdonát képezik.

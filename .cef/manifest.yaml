@@ -32,10 +32,8 @@ mcp:
   - chrome-devtools
   - higgsfield
 metadata:
-  description: 'SmashR premium smashburger etterem Budapesten. Magyar nyelvu
-    bemutatkozo weboldal: fooldal, rolunk, etlap, kapcsolat es SmashR Experience
-    markaoldal. Friss marhahus, smash technika, street food kultura, Foodora es
-    Wolt rendeles, terkep es utvonaltervezes.'
+  description: >-
+    SmashR is a premium smashburger restaurant in Budapest. A Hungarian-language restaurant website (magyar nyelvu etterem weboldal) with a home page, our story / about us, a menu (etlap) built from the live Foodora offer, a contact page with a location map, and a SmashR Experience brand page. Fresh beef, smash technique, street food culture, online food ordering via Foodora and Wolt, route planning and opening hours.
   framework: nextjs
   language: typescript
   packageManager: npm
@@ -57,11 +55,11 @@ features:
   aiSeo: true
   githubActions: true
 deployment:
-  target: vercel
+  target: docker
 languages:
-  primary: en
+  primary: hu
   additional: []
-  country: United States
+  country: Hungary
 generatedFiles:
   - .cef/consent.json
   - .cef/design/impeccable.md

@@ -1,0 +1,63 @@
+# Local-only compose. The committed docker-compose.yml is the deploy contract for
+# the Klivo hosting platform (external Traefik network, no published ports) and
+# will not start on a laptop — use this file instead:
+#
+#   docker compose -f docker-compose.local.yml up --build       -> http://localhost:3000
+#   docker compose -f docker-compose.local.yml --profile dev up  -> http://localhost:3001
+#
+# "web" runs the real production image (same Dockerfile as deploy), so it is what
+# you check before shipping. "dev" runs `next dev` against the mounted source with
+# hot reload; it is behind a profile so it never starts by accident.
+name: smashr-local
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        # NEXT_PUBLIC_* is inlined at build time, so it is a build arg, not just env.
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    container_name: smashr_local_web
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      NEXT_TELEMETRY_DISABLED: '1'
+    ports:
+      # Host 3000 -> the container's port 80 (what the platform routes to).
+      - '3000:80'
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:80/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  dev:
+    profiles: ['dev']
+    image: node:20-alpine
+    container_name: smashr_local_dev
+    working_dir: /app
+    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --hostname 0.0.0.0 --port 3000"
+    environment:
+      NEXT_PUBLIC_SITE_URL: http://localhost:3001
+      NEXT_TELEMETRY_DISABLED: '1'
+      # Bind-mounted host files do not emit inotify events on Docker Desktop.
+      WATCHPACK_POLLING: 'true'
+      CHOKIDAR_USEPOLLING: 'true'
+    volumes:
+      - .:/app
+      # Named volumes keep the container's Linux node_modules/.next off the host,
+      # so they never collide with a local `npm install` or `npm run dev`.
+      - dev_node_modules:/app/node_modules
+      - dev_next_cache:/app/.next
+    ports:
+      - '3001:3000'
+
+volumes:
+  dev_node_modules:
+  dev_next_cache:

@@ -1,8 +1,24 @@
+# Deploys to the Klivo Docker hosting platform (Traefik file-provider routing).
+# The container name and network embed the client slug "smashr"; if your platform
+# client uses a different slug, regenerate with "cef generate --client-slug <slug>"
+# or edit the two names below to match.
 services:
-  app:
+  hosting_smashr_web:
     build: .
+    container_name: hosting_smashr_web
     restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - '3000:3000'
+    expose:
+      - '80'
+    networks:
+      - client_smashr_net
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+networks:
+  client_smashr_net:
+    external: true

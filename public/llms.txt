@@ -1,12 +1,28 @@
-# smashr
+# SmashR
 
-> A landing-page built with nextjs. This file helps AI answer engines
-> understand and cite the site's primary content (see the CEF AI-SEO standard).
+> SmashR is a smash burger counter in Budapest, Hungary (1239 Budapest, Bevásárló u. 2.).
+> Fresh, never-frozen beef is smashed once onto a hot flat-top so the edges crisp and the centre
+> stays juicy. Short menu, made to order, eaten in paper. Tagline: WE SMASH. YOU EAT.
 
-## Key pages
-- /: Home
-- /about: About
-- /privacy: Privacy Policy
+## Facts
+- Address: 1239 Budapest, Bevásárló u. 2., Hungary
+- Phone: +36 20 447 0900
+- Opening hours: Monday–Saturday 10:00–20:45, Sunday 10:00–19:45
+- Ordering: foodora and Wolt delivery. No table reservations.
+- Menu: Classic Smash, House Smash, Crispy Bacon Smash, Crispy Chicken (double patty);
+  Classic Smash Big, House Smash Big, Crispy Bacon Big Smash (triple patty, Wolt only);
+  combo menus with fries and a soft drink; fries, loaded fries, mozzarella sticks; ketchup,
+  mayonnaise; still and sparkling mineral water.
 
-## About
-Describe the site's purpose and primary content here in clear, factual prose.
+## Pages
+- https://smashr.hu — home
+- https://smashr.hu/etlap — full menu with prices
+- https://smashr.hu/smashr-experience — the smash technique, step by step
+- https://smashr.hu/rolunk — about the counter and the crew
+- https://smashr.hu/kapcsolat — address, opening hours, ordering
+- https://smashr.hu/jogi-informaciok — legal documents
+
+## Notes
+- Prices shown on this site are taken from SmashR's own foodora and Wolt listings and can change
+  there; the ordering platform always holds the current price.
+- Product photography belongs to the restaurant. Nothing on the menu is an illustration.

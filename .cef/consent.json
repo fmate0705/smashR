@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "locale": "en",
+  "locale": "hu",
   "categories": [
     {
       "id": "necessary",
@@ -43,23 +43,9 @@
         "hu": "Méri az oldalak használatát a fejlesztés érdekében. Hozzájárulás nélkül semmi nem töltődik be."
       },
       "googleSignals": ["analytics_storage"]
-    },
-    {
-      "id": "marketing",
-      "essential": false,
-      "defaultGranted": false,
-      "label": {
-        "en": "Marketing",
-        "hu": "Marketing"
-      },
-      "description": {
-        "en": "Used to measure and personalize advertising. Nothing is loaded until you allow it.",
-        "hu": "Hirdetések méréséhez és személyre szabásához. Hozzájárulás nélkül semmi nem töltődik be."
-      },
-      "googleSignals": ["ad_storage", "ad_user_data", "ad_personalization"]
     }
   ],
-  "placement": "bottom-banner",
+  "placement": "bottom-right-card",
   "tone": "card",
   "blocking": false,
   "rejectAllVisible": true,
@@ -71,7 +57,7 @@
   },
   "googleConsentMode": true,
   "reopenSelector": "[data-consent-reopen]",
-  "policyPath": "/legal/cookie-policy",
+  "policyPath": "/jogi-informaciok/suti-tajekoztato",
   "copy": {
     "title": {
       "en": "Choose what we store",
@@ -79,7 +65,7 @@
     },
     "body": {
       "en": "We store only what this site needs to work until you choose otherwise. Analytics and marketing stay off until you allow them.",
-      "hu": "Amíg Ön másként nem dönt, csak a működéshez szükséges adatokat tároljuk. Az analitika és a marketing kikapcsolva marad, amíg nem engedélyezi."
+      "hu": "Amíg Ön másként nem dönt, csak a működéshez szükséges adatokat tároljuk. A beágyazott térkép és az analitika kikapcsolva marad, amíg nem engedélyezi."
     },
     "acceptAll": {
       "en": "Allow all",

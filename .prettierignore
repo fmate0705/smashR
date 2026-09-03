@@ -1,7 +1,8 @@
-dist/
-build/
 .next/
 node_modules/
 coverage/
+.qa/
+# Written by the CEF CLI. Reformatting it here would show as drift on the next generate.
+.cef/
 pnpm-lock.yaml
 package-lock.json

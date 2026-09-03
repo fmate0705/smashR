@@ -1,0 +1,117 @@
+{
+  "issues": [
+    {
+      "id": "impeccable-1",
+      "gate": "impeccable",
+      "severity": "major",
+      "message": "IM-015 Radial-gradient background halo — `radial-gradient(`",
+      "file": "components/sections/hero.tsx:188",
+      "recommendation": "Ground the surface with a solid or subtly shifted background token."
+    },
+    {
+      "id": "impeccable-2",
+      "gate": "impeccable",
+      "severity": "major",
+      "message": "IM-015 Radial-gradient background halo — `radial-gradient(`",
+      "file": "components/sections/hero.tsx:190",
+      "recommendation": "Ground the surface with a solid or subtly shifted background token."
+    },
+    {
+      "id": "impeccable-3",
+      "gate": "impeccable",
+      "severity": "major",
+      "message": "IM-046 Wide letter spacing on body text — `<p className=\"smashr-display mt-12 text-center text-[clamp(0.95rem,2.4vw,1.75rem)] tracking-[0.22em]`",
+      "file": "components/sections/hero.tsx:224",
+      "recommendation": "Reserve wide tracking for short uppercase labels."
+    },
+    {
+      "id": "impeccable-4",
+      "gate": "impeccable",
+      "severity": "major",
+      "message": "IM-039 Tight line height — `line-height: 0.95;`",
+      "file": "styles/brand.css:104",
+      "recommendation": "Set body leading between 1.5 and 1.7 so lines have room to breathe."
+    },
+    {
+      "id": "impeccable-5",
+      "gate": "impeccable",
+      "severity": "major",
+      "message": "IM-039 Tight line height — `line-height: 0.9;`",
+      "file": "styles/brand.css:109",
+      "recommendation": "Set body leading between 1.5 and 1.7 so lines have room to breathe."
+    },
+    {
+      "id": "impeccable-6",
+      "gate": "impeccable",
+      "severity": "nit",
+      "message": "15 rules need a rendered page: IM-016, IM-034, IM-035, IM-030, IM-031, IM-032, IM-033, IM-036, IM-037, IM-038, IM-041, IM-047, IM-048, IM-049, IM-058.",
+      "recommendation": "Settle these during browser validation (Chrome DevTools MCP)."
+    },
+    {
+      "id": "motion-7",
+      "gate": "motion",
+      "severity": "minor",
+      "message": "GS-14 Vestibular parallax range: 108% displacement — yPercent: 108",
+      "file": "components/motion/animated-heading.tsx:33",
+      "recommendation": "Keep parallax within ±25% and reserve rotation for content that is about rotation."
+    },
+    {
+      "id": "motion-8",
+      "gate": "motion",
+      "severity": "minor",
+      "message": "GS-26 GSAP hand-rolling presence or layout animation: hand-rolled with getBoundingClientRect() — getBoundingClientRect()",
+      "file": "components/sections/hero.tsx:54",
+      "recommendation": "Use Framer Motion's `AnimatePresence` for exit and its `layout` prop for layout changes. GSAP stays for scroll and timeline choreography."
+    },
+    {
+      "id": "motion-9",
+      "gate": "motion",
+      "severity": "minor",
+      "message": "GS-26 GSAP hand-rolling presence or layout animation: hand-rolled with getBoundingClientRect() — getBoundingClientRect()",
+      "file": "components/sections/hero.tsx:93",
+      "recommendation": "Use Framer Motion's `AnimatePresence` for exit and its `layout` prop for layout changes. GSAP stays for scroll and timeline choreography."
+    },
+    {
+      "id": "motion-10",
+      "gate": "motion",
+      "severity": "nit",
+      "message": "4 scroll rules need a rendered page: GS-15, GS-19, GS-20, GS-24.",
+      "recommendation": "Settle these at browser validation (TE-08) — scroll FPS, pin layout shift, focus inside a pin, and repeated entrances."
+    },
+    {
+      "id": "seo-11",
+      "gate": "seo",
+      "severity": "minor",
+      "message": "Missing SEO artifact \"public/schema.json\".",
+      "file": "public/schema.json"
+    },
+    {
+      "id": "content-12",
+      "gate": "content",
+      "severity": "blocker",
+      "message": "Placeholder/lorem-ipsum content shipped.",
+      "file": "content/legal.ts"
+    },
+    {
+      "id": "content-13",
+      "gate": "content",
+      "severity": "nit",
+      "message": "Grammar and tone require a human read-through before approval.",
+      "recommendation": "Proofread all shipped copy."
+    },
+    {
+      "id": "brand-14",
+      "gate": "brand",
+      "severity": "nit",
+      "message": "Brand alignment (voice, imagery, tone) needs a human sign-off.",
+      "recommendation": "Have the brand owner review before approval."
+    },
+    {
+      "id": "legal-15",
+      "gate": "legal",
+      "severity": "major",
+      "message": "Generated legal text requires review by a qualified legal professional.",
+      "recommendation": "Generated legal text is a draft only. It MUST be reviewed by a qualified legal professional before publication; CEF does not provide legal advice."
+    }
+  ]
+}

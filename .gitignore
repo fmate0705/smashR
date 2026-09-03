@@ -1,31 +1,10 @@
-# Dependencies
-node_modules/
-.pnp/
-.yarn/
-
-# Build output
-dist/
-build/
-.next/
-.astro/
-out/
-*.tsbuildinfo
-
-# Environment & secrets
+node_modules
+.next
+out
 .env
-.env.*
-!.env.example
+.env.local
+*.tsbuildinfo
+next-env.d.ts
 
-# Logs & caches
-logs/
-*.log
-.cache/
-.eslintcache
-coverage/
-
-# OS & editor
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/*
-!.vscode/extensions.json
+# Local visual-QA output.
+.qa/
