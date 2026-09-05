@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Logo } from '@/components/ui/logo';
+import { HomeLink } from '@/components/site/home-link';
 import { ButtonLink } from '@/components/ui/button';
 import { PinMark } from '@/components/ui/platform-mark';
 import { Container } from '@/components/sections/surface';
@@ -94,13 +95,9 @@ export function Navbar() {
           )}
         >
           <div className="flex h-[var(--smashr-nav-h)] items-center justify-between gap-6">
-            <Link
-              href="/"
-              className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-black"
-              aria-label="SmashR — vissza a főoldalra"
-            >
+            <HomeLink className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-black">
               <Logo tone="red" priority className="w-[7.5rem] sm:w-[8.5rem]" decorative />
-            </Link>
+            </HomeLink>
 
             <nav aria-label="Főmenü" className="hidden lg:block">
               <ul className="flex items-center gap-8">

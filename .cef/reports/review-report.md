@@ -1,8 +1,8 @@
 # smashr — Review Report
 
-> Reviewed 2026-09-05T08:40:39.102Z. Generation does not imply approval.
+> Reviewed 2026-09-05T09:22:04.663Z. Generation does not imply approval.
 
-**Overall 89/100 · Readiness 86/100 · Recommendation: CONDITIONAL**
+**Overall 88/100 · Readiness 86/100 · Recommendation: CONDITIONAL**
 
 ## Quality gates
 
@@ -16,11 +16,11 @@
 | Performance | yes | ✔ pass | 100 |
 | SEO | yes | ⚠ warn | 75 |
 | Security | yes | ✔ pass | 100 |
-| Content | yes | ⚠ warn | 64 |
+| Content | yes | ⚠ warn | 69 |
 | Brand Consistency | yes | ✔ pass | 99 |
 | Legal | yes | ⚠ warn | 85 |
 | Consent | yes | ✔ pass | 100 |
-| Docker | advisory | ✔ pass | 100 |
+| Docker | advisory | ⚠ warn | 85 |
 | Testing | advisory | ✔ pass | 100 |
 | Documentation | advisory | ✔ pass | 100 |
 
@@ -44,10 +44,10 @@
 - **[minor] content** — Internal link "/etlap" has no matching page. (components/sections/menu-teaser.tsx)
 - **[minor] content** — Internal link "/etlap" has no matching page. (components/sections/not-found-content.tsx)
 - **[minor] content** — Internal link "/" has no matching page. (components/sections/not-found-content.tsx)
-- **[minor] content** — Internal link "/" has no matching page. (components/site/footer.tsx)
-- **[minor] content** — Internal link "/" has no matching page. (components/site/navbar.tsx)
+- **[minor] content** — Internal link "/" has no matching page. (components/site/home-link.tsx)
 - **[nit] content** — Grammar and tone require a human read-through before approval.
 - **[nit] brand** — Brand alignment (voice, imagery, tone) needs a human sign-off.
 - **[major] legal** — Generated legal text requires review by a qualified legal professional.
+- **[major] docker** — No local development compose (docker-compose.dev.yml).
 
 Approval state: **draft**.

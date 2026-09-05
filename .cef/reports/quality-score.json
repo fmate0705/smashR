@@ -1,7 +1,7 @@
 {
   "projectName": "smashr",
-  "reviewedAt": "2026-09-05T08:40:39.102Z",
-  "overall": 89,
+  "reviewedAt": "2026-09-05T09:22:04.663Z",
+  "overall": 88,
   "readiness": 86,
   "recommendation": "conditional",
   "requiredPassed": true,
@@ -14,11 +14,11 @@
     "performance": 100,
     "seo": 75,
     "security": 100,
-    "content": 64,
+    "content": 69,
     "brand": 99,
     "legal": 85,
     "consent": 100,
-    "docker": 100,
+    "docker": 85,
     "testing": 100,
     "documentation": 100
   },
@@ -35,7 +35,7 @@
     "brand": "pass",
     "legal": "warn",
     "consent": "pass",
-    "docker": "pass",
+    "docker": "warn",
     "testing": "pass",
     "documentation": "pass"
   }

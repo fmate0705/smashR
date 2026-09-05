@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Container } from '@/components/sections/surface';
+import { HomeLink } from '@/components/site/home-link';
 import { ConsentSettingsButton } from '@/components/consent/consent-settings-button';
 import { Logo } from '@/components/ui/logo';
 import { SocialLinks } from '@/components/ui/social-links';
@@ -29,13 +30,9 @@ export function Footer() {
     <footer className="smashr-wave-top relative isolate z-20 bg-black pt-[calc(var(--smashr-wave-h)+2.5rem)] text-white">
       <Container width="wide">
         <div className="flex flex-col gap-8 pb-9 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-          <Link
-            href="/"
-            className="w-fit shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-black"
-            aria-label="SmashR — vissza a főoldalra"
-          >
+          <HomeLink className="w-fit shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-black">
             <Logo tone="red" className="w-40" decorative />
-          </Link>
+          </HomeLink>
 
           {/* Somewhere to go, twice over: the accounts, then the two platforms side by side. The
               platforms are alternatives, and stacking them made the second read as a lesser one. */}

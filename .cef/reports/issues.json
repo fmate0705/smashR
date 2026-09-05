@@ -139,35 +139,35 @@
       "gate": "content",
       "severity": "minor",
       "message": "Internal link \"/\" has no matching page.",
-      "file": "components/site/footer.tsx"
+      "file": "components/site/home-link.tsx"
     },
     {
       "id": "content-20",
-      "gate": "content",
-      "severity": "minor",
-      "message": "Internal link \"/\" has no matching page.",
-      "file": "components/site/navbar.tsx"
-    },
-    {
-      "id": "content-21",
       "gate": "content",
       "severity": "nit",
       "message": "Grammar and tone require a human read-through before approval.",
       "recommendation": "Proofread all shipped copy."
     },
     {
-      "id": "brand-22",
+      "id": "brand-21",
       "gate": "brand",
       "severity": "nit",
       "message": "Brand alignment (voice, imagery, tone) needs a human sign-off.",
       "recommendation": "Have the brand owner review before approval."
     },
     {
-      "id": "legal-23",
+      "id": "legal-22",
       "gate": "legal",
       "severity": "major",
       "message": "Generated legal text requires review by a qualified legal professional.",
       "recommendation": "Generated legal text is a draft only. It MUST be reviewed by a qualified legal professional before publication; CEF does not provide legal advice."
+    },
+    {
+      "id": "docker-23",
+      "gate": "docker",
+      "severity": "major",
+      "message": "No local development compose (docker-compose.dev.yml).",
+      "recommendation": "Add docker-compose.dev.yml so local work never edits the production compose."
     }
   ]
 }

@@ -23,3 +23,6 @@
 ## Legal
 - Generated legal text is a draft only. It MUST be reviewed by a qualified legal professional before publication; CEF does not provide legal advice. _(major)_
 
+## Docker
+- Add docker-compose.dev.yml so local work never edits the production compose. _(major)_
+

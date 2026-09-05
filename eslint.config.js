@@ -7,7 +7,9 @@ import reactHooks from 'eslint-plugin-react-hooks';
  * calls ESLint directly and owns its rule set.
  */
 export default tseslint.config(
-  { ignores: ['.next/**', 'node_modules/**', 'coverage/**', 'next-env.d.ts'] },
+  // `.qa/` is local visual-QA output and throwaway probe scripts, already out of prettier's
+  // reach and out of git. Linting it only ever fails the gate on a file nobody ships.
+  { ignores: ['.next/**', 'node_modules/**', 'coverage/**', '.qa/**', 'next-env.d.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

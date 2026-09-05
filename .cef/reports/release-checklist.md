@@ -8,11 +8,11 @@
 - [x] Performance — pass (100/100)
 - [x] SEO — warn (75/100)
 - [x] Security — pass (100/100)
-- [x] Content — warn (64/100)
+- [x] Content — warn (69/100)
 - [x] Brand Consistency — pass (99/100)
 - [x] Legal — warn (85/100)
 - [x] Consent — pass (100/100)
-- [x] Docker _(advisory)_ — pass (100/100)
+- [x] Docker _(advisory)_ — warn (85/100)
 - [x] Testing _(advisory)_ — pass (100/100)
 - [x] Documentation _(advisory)_ — pass (100/100)
 
