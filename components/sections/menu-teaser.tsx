@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { PaperSection, Container } from '@/components/sections/surface';
 import { ProductCard } from '@/components/sections/product-card';
 import { Reveal } from '@/components/motion';
-import { menuItems } from '@/content/menu';
+import { getFeaturedItems } from '@/lib/store/content';
 
 /**
  * The four items the kitchen leads with, on the way to the full menu.
@@ -11,8 +11,8 @@ import { menuItems } from '@/content/menu';
  * shortlist and then gets out of the way — the link to `/etlap` is the point of the section, not
  * an afterthought at the bottom of it.
  */
-export function MenuTeaser() {
-  const featured = menuItems.filter((item) => item.highlight === true).slice(0, 4);
+export async function MenuTeaser() {
+  const featured = await getFeaturedItems();
 
   return (
     <PaperSection ariaLabelledBy="kiemelt-cim">

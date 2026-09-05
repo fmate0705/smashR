@@ -13,6 +13,12 @@ interface StorySectionProps {
     readonly base: ImageKey;
     readonly alt: string;
     readonly widths: readonly number[];
+    /**
+     * Set when this section opens a page. Everything here is lazy by default, which is right for
+     * a section three screens down and wrong for the one the visitor is already looking at — a
+     * lazy, low-priority image above the fold arrives after everything else on the page.
+     */
+    readonly priority?: boolean;
   };
   /** `mark` puts the wordmark above the heading — the home page's story block. */
   readonly variant?: 'mark' | 'plain';
@@ -20,7 +26,8 @@ interface StorySectionProps {
   readonly media?: 'left' | 'right';
   /** The surface it is told on. The block reads its colours from the surface, not from the tone. */
   readonly tone?: SurfaceTone;
-  readonly tearInto?: SurfaceTone;
+  /** Off when this block follows a page header. */
+  readonly waveTop?: boolean;
   readonly footer?: React.ReactNode;
 }
 
@@ -43,11 +50,11 @@ export function StorySection({
   variant = 'plain',
   media = 'right',
   tone = 'tile',
-  tearInto,
+  waveTop = true,
   footer,
 }: StorySectionProps) {
   return (
-    <Surface id={id} tone={tone} spacing="loose" tearInto={tearInto}>
+    <Surface id={id} tone={tone} spacing="loose" waveTop={waveTop}>
       <Container>
         <Reveal
           className={cn(
@@ -80,6 +87,7 @@ export function StorySection({
             <SmashImage
               base={image.base}
               widths={image.widths}
+              priority={image.priority === true}
               sizes="(min-width: 1024px) 44vw, 92vw"
               alt={image.alt}
               className="relative"

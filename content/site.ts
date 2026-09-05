@@ -67,16 +67,24 @@ export const mapEmbedUrl =
 export const socialLinks = [
   {
     id: 'instagram',
+    name: 'Instagram',
+    // The handle as the account itself publishes it. Facebook's page has none — it is reached by
+    // numeric id — so that card names the page instead of inventing a vanity URL for it.
+    handle: '@smashr.burger',
     label: 'SmashR az Instagramon',
     href: 'https://www.instagram.com/smashr.burger/',
   },
   {
     id: 'tiktok',
+    name: 'TikTok',
+    handle: '@smashr.burger',
     label: 'SmashR a TikTokon',
     href: 'https://www.tiktok.com/@smashr.burger',
   },
   {
     id: 'facebook',
+    name: 'Facebook',
+    handle: 'SmashR',
     label: 'SmashR a Facebookon',
     href: 'https://www.facebook.com/profile.php?id=61588799159939',
   },

@@ -1,10 +1,12 @@
 import { ProductCard } from '@/components/sections/product-card';
 import { Reveal } from '@/components/motion';
-import { itemsInCategory, type MenuCategory } from '@/content/menu';
+import type { MenuCategory, MenuItem } from '@/content/menu';
 import { cn } from '@/lib/cn';
 
 interface ProductGridProps {
   readonly category: MenuCategory;
+  /** The category's items. Passed in so one page render performs one store read, not six. */
+  readonly items: readonly MenuItem[];
   /**
    * The first grid on a page is already on screen when it loads. Animating it in means the
    * visitor watches their own content arrive, and its photographs are the largest paint — so it
@@ -20,8 +22,7 @@ interface ProductGridProps {
  * The heading is linked to the list with `aria-labelledby` so a screen reader announces the
  * category when it enters the list, rather than reading seventeen products as one flat run.
  */
-export function ProductGrid({ category, eager = false }: ProductGridProps) {
-  const items = itemsInCategory(category.id);
+export function ProductGrid({ category, items, eager = false }: ProductGridProps) {
   if (items.length === 0) {
     return null;
   }

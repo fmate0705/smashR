@@ -11,6 +11,12 @@ services:
       - .env
     expose:
       - '80'
+    volumes:
+      # Everything the restaurant edits in /admin — the menu, the hours, the phone
+      # number — is written here. The image is replaced on every deploy, so this has
+      # to be a volume: without it a redeploy would silently restore the shipped menu.
+      # The path matches SMASHR_DATA_DIR, whose default is set in the Dockerfile.
+      - smashr_content:/data
     networks:
       - client_smashr_net
     logging:
@@ -18,6 +24,9 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+
+volumes:
+  smashr_content:
 
 networks:
   client_smashr_net:

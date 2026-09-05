@@ -8,3 +8,6 @@ next-env.d.ts
 
 # Local visual-QA output.
 .qa/
+
+# Content written by the admin. Mounted as a volume in the container.
+/data/

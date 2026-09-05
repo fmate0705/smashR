@@ -24,10 +24,12 @@ interface SurfaceProps {
   readonly ariaLabelledBy?: string;
   readonly ariaLabel?: string;
   /**
-   * Tears the bottom edge open into the named surface. Only the paper-stock tones carry it — a
-   * torn edge on the tile wall would be a torn wall, which is a different and worse idea.
+   * Cuts the section's own top edge into a wave, revealing whatever sits behind it. On by default:
+   * every join between two sections is a torn one. Turn it off for a section that opens a page,
+   * where there is nothing above to reveal, and for any section that pins a child — a mask makes
+   * a fixed-position descendant clip to it, which would break the pin.
    */
-  readonly tearInto?: SurfaceTone;
+  readonly waveTop?: boolean;
 }
 
 const SPACING = {
@@ -103,44 +105,6 @@ function TileEdge({ side }: { side: 'top' | 'bottom' }) {
   );
 }
 
-/** The fill each tone's divider is drawn in, so a divider matches the section it tears into. */
-const TONE_FILL: Record<SurfaceTone, string> = {
-  tile: 'rgb(0 0 0)',
-  paper: 'rgb(var(--smashr-paper))',
-  beige: 'rgb(var(--smashr-beige))',
-};
-
-/**
- * A torn paper edge between two surfaces.
- *
- * Drawn in the colour of the section that comes *next*, so the beige appears to have been torn
- * away to reveal it. It is one hand-drawn path rather than a repeating wave: a mathematical curve
- * reads as a shape tool, and the point of this edge is that the surface is paper.
- *
- * `preserveAspectRatio="none"` lets one path stretch to any viewport width; the vertical scale is
- * fixed by the wrapper's height, so the tear never grows into a hill on a wide display.
- */
-function TornDivider({ into }: { into: SurfaceTone }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-[-1px] z-[1] block h-10 sm:h-14"
-    >
-      <svg
-        viewBox="0 0 1440 60"
-        preserveAspectRatio="none"
-        className="h-full w-full"
-        focusable="false"
-      >
-        <path
-          d="M0 34 C 62 22, 104 41, 168 36 C 232 31, 268 15, 336 21 C 404 27, 430 46, 500 43 C 570 40, 604 24, 672 27 C 740 30, 772 47, 842 45 C 912 43, 948 26, 1016 29 C 1084 32, 1114 48, 1182 44 C 1250 40, 1284 23, 1348 28 C 1392 31, 1416 39, 1440 33 L 1440 60 L 0 60 Z"
-          fill={TONE_FILL[into]}
-        />
-      </svg>
-    </span>
-  );
-}
-
 /**
  * Each surface publishes its own ink and ground as channel triplets. A control dropped onto any of
  * them — the secondary button above all — reads those instead of being told a colour, which is why
@@ -169,11 +133,8 @@ export function Surface({
   as: Tag = 'section',
   ariaLabelledBy,
   ariaLabel,
-  tearInto,
+  waveTop = true,
 }: SurfaceProps & { readonly tone: SurfaceTone }) {
-  // A torn edge is a paper idea. Asking for one on the tile wall is asking for a torn wall.
-  const tear = tone === 'tile' ? undefined : tearInto;
-
   return (
     <Tag
       id={id}
@@ -183,9 +144,10 @@ export function Surface({
         'relative isolate overflow-hidden',
         TONE_CLASS[tone],
         SPACING[spacing],
-        // The tear eats into the section's own bottom padding, so the content above it keeps its
-        // full rhythm instead of ending up crowded against the torn line.
-        tear !== undefined && spacing !== 'flush' && 'pb-[calc(var(--smashr-section-y)+2.5rem)]',
+        // The wave eats into the section's own top padding, so the first line of content keeps its
+        // full rhythm instead of ending up crowded against the torn edge.
+        waveTop && 'smashr-wave-top',
+        waveTop && spacing !== 'flush' && 'pt-[calc(var(--smashr-section-y)+var(--smashr-wave-h))]',
         className,
       )}
     >
@@ -198,15 +160,18 @@ export function Surface({
       {tone === 'paper' ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.55] mix-blend-multiply"
+          className="pointer-events-none absolute inset-0 opacity-[0.2] mix-blend-multiply"
           style={{
             backgroundImage: 'url(/images/texture/paper.webp)',
-            backgroundSize: '820px auto',
+            backgroundSize: '340px auto',
           }}
         />
       ) : null}
-      <div className="relative">{children}</div>
-      {tear === undefined ? null : <TornDivider into={tear} />}
+      {/* `w-full` matters only when the section itself is laid out as a row flex container — the
+          full-height 404 and error pages are — where this wrapper would otherwise shrink to its
+          content and take the container's own centring with it. Everywhere else it is what a
+          block-level div already does. */}
+      <div className="relative w-full">{children}</div>
     </Tag>
   );
 }

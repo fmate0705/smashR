@@ -73,6 +73,57 @@
   --smashr-ground: 0 0 0;
 }
 
+/*
+ * Root scale. Every size on the site is in rem, so this one value moves all of them together.
+ * It is tied to the viewport rather than fixed at 16px because the complaint a large display
+ * makes is not that the layout is wrong — it is that the type is small.
+ *
+ *   390px -> 16px    1440px -> 17px    2560px -> 18.5px
+ */
+html {
+  font-size: clamp(16px, 0.134vw + 15.07px, 18.5px);
+}
+
+/*
+ * The wavy edge between two sections.
+ *
+ * It is a mask on the section itself, not a shape drawn on the section above it. That distinction
+ * is the whole point: masking cuts the section's own background *and* its paper texture along the
+ * wave, so the newsprint runs right up to the torn line. A coloured shape laid on top can only
+ * ever be flat, which is why the earlier version showed a hard edge where the texture stopped.
+ *
+ * Two mask layers — the wave across the top strip, a solid block for everything below it — unioned
+ * by the default 'add' compositing. The one-pixel overlap keeps a hairline from appearing between
+ * them on fractional device pixel ratios.
+ */
+.smashr-wave-top {
+  --smashr-wave-h: clamp(2.25rem, 3.4vw, 4rem);
+  /*
+   * The cut has to reveal the section above, not the page behind it — so the element is pulled up
+   * by exactly the height of the wave and overlaps its predecessor by that much. Without this the
+   * mask opens onto the body's own background and every join reads as a flat band of black.
+   */
+  margin-top: calc(-1 * var(--smashr-wave-h));
+  -webkit-mask-image: url('/images/texture/wave-top.svg'), linear-gradient(#000, #000);
+  mask-image: url('/images/texture/wave-top.svg'), linear-gradient(#000, #000);
+  -webkit-mask-size:
+    100% var(--smashr-wave-h),
+    100% calc(100% - var(--smashr-wave-h) + 1px);
+  mask-size:
+    100% var(--smashr-wave-h),
+    100% calc(100% - var(--smashr-wave-h) + 1px);
+  -webkit-mask-position:
+    top center,
+    bottom center;
+  mask-position:
+    top center,
+    bottom center;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
 /* The tile edges that stitch the black sections together are decorative and must never trap a
    pointer or a screen reader. */
 .smashr-tile-edge {
@@ -107,6 +158,21 @@
 /* The largest headings sit one notch tighter, because optical leading closes as size grows. */
 .smashr-display-xl {
   line-height: 0.9;
+}
+
+/*
+ * The hero wordmark, lifted off the tile wall.
+ *
+ * Two black shadows rather than one. The tight one gives the script's thin joins an edge so they
+ * do not dissolve into the glaze behind them; the wide, soft one only becomes visible where the
+ * moving light actually falls on the tiles — so the mark reads as a sign mounted on the wall, and
+ * its shadow arrives with the light instead of being painted on underneath it.
+ *
+ * `drop-shadow` rather than `box-shadow`: the logo is a transparent SVG, and box-shadow would
+ * outline its rectangle instead of the lettering.
+ */
+.smashr-logo-shadow {
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.55)) drop-shadow(0 14px 34px rgb(0 0 0 / 0.75));
 }
 
 /* A hairline that reads as a rule, not a border — used to separate editorial blocks. */

@@ -23,6 +23,10 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Where the admin writes the editable content. A volume is mounted here by both
+# compose files; without one the file lives in the container layer and a redeploy
+# would quietly restore the shipped menu.
+ENV SMASHR_DATA_DIR=/data
 ENV PORT=80
 ENV HOSTNAME=0.0.0.0
 COPY --from=builder /app/public ./public

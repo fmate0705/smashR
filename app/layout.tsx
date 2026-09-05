@@ -2,16 +2,16 @@ import type { Metadata, Viewport } from 'next';
 import { Archivo, Archivo_Black } from 'next/font/google';
 import './globals.css';
 import '@/styles/brand.css';
-import { Navbar } from '@/components/site/navbar';
-import { Footer } from '@/components/site/footer';
-import { ConsentProvider } from '@/components/consent/consent-provider';
-import { ConsentWindow } from '@/components/consent/consent-window';
-import { restaurantJsonLd, websiteJsonLd } from '@/lib/seo/jsonld';
-import { responsiveImage, WIDTHS } from '@/lib/images/responsive';
 import { site } from '@/content/site';
 import { siteUrl } from '@/lib/site-url';
 
 /**
+ * The document shell: type, tokens and the metadata every route shares.
+ *
+ * Deliberately holds no chrome. The public site's navigation, footer and consent window live in
+ * `(site)/layout.tsx`, because the admin is served from the same app and a tool page with a
+ * restaurant's navbar and a cookie banner across it is a tool that is harder to use.
+ *
  * One superfamily, two roles. Archivo Black is the display voice — it has a single weight and is
  * only ever used large and uppercase; Archivo carries running text at the sizes where Black would
  * be unreadable. Same skeleton, same metrics, so the page reads as one typeface rather than a
@@ -35,8 +35,6 @@ const body = Archivo({
   variable: '--font-body',
   fallback: ['system-ui', 'Segoe UI', 'Arial', 'sans-serif'],
 });
-
-const hero = responsiveImage('/images/hero/tile-base', WIDTHS.hero);
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -76,41 +74,8 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="hu" className={`${display.variable} ${body.variable}`} suppressHydrationWarning>
-      <head>
-        {/* The hero wall is the largest paint on the landing page, and it is a background rather
-            than markup the preload scanner would find on its own. Preloading the exact srcSet the
-            hero renders means the browser starts the right file, at the right width, immediately. */}
-        <link
-          rel="preload"
-          as="image"
-          href={hero.src}
-          imageSrcSet={hero.srcSet}
-          imageSizes="100vw"
-          fetchPriority="high"
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
-      </head>
       <body className="min-h-screen bg-black font-[family-name:var(--font-body)] text-white antialiased">
-        <a
-          href="#main"
-          className="sr-only rounded-full bg-primary px-5 py-3 text-sm font-medium text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100]"
-        >
-          Ugrás a tartalomra
-        </a>
-        {/* Consent wraps the app so no non-essential embed can load before a decision exists. */}
-        <ConsentProvider>
-          <Navbar />
-          <main id="main">{children}</main>
-          <Footer />
-          <ConsentWindow />
-        </ConsentProvider>
+        {children}
       </body>
     </html>
   );

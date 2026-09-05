@@ -11,6 +11,7 @@ the Claude Enterprise Framework.
 /rolunk               the counter, the method, the crew
 /kapcsolat            address, hours, phone, map, ordering
 /jogi-informaciok     impressum, privacy, terms, cookies (drafts — see below)
+/admin                the restaurant's editor: menu, hours, phone, home-page shortlist
 ```
 
 ---
@@ -48,6 +49,41 @@ The image is a multi-stage Next.js **standalone** build listening on **port 80**
 `docker-compose.yml` matches the Klivo hosting platform's contract (service and container
 `hosting_smashr_web`, external network `client_smashr_net`, no Traefik labels — the platform routes
 through its file provider). `deploy/DEPLOY.md` is the runbook.
+
+---
+
+## Configuration and the admin
+
+Two tiers, and the split is the point.
+
+**The operator's details come from the environment.** Company name, registration and tax numbers,
+the data-protection address, the hosting provider — everything the legal pages have to state.
+They are set once at handover, they change almost never, and nobody should open an editor to
+correct a VAT number. Copy `.env.example` to `.env` and fill it in; anything left empty renders as
+a visible `[cégnév — kitöltendő]` placeholder rather than a blank line or an invented value. Every
+value is read per request, so a corrected variable takes effect on the next render, not the next
+build.
+
+**Everything the kitchen changes lives behind a login at `/admin`.** Prices, descriptions,
+categories, which platforms an item is orderable on, whether it appears at all, the opening hours,
+the phone number, and which four items lead the home page. Product photography is not editable —
+it is the venue's own, keyed to the item it shows.
+
+Set the three admin variables before it will accept anything:
+
+```bash
+node scripts/hash-password.mjs 'the chosen password'
+```
+
+It prints `SMASHR_ADMIN_PASSWORD_HASH` and a `SMASHR_SESSION_SECRET`; add them to `.env` next to
+`SMASHR_ADMIN_USER`. The login page names the missing variable if one is not set. The session is a
+signed JWT in an `httpOnly` cookie, valid for eight hours.
+
+Saved content is one JSON file at `SMASHR_DATA_DIR` (`/data` in the image, `./data` locally),
+written atomically and mounted as a volume by both compose files — the build output is replaced on
+every deploy and the restaurant's text has to survive that. An empty volume is not an empty site:
+the store falls back to the menu that shipped. Every save calls `revalidatePath`, so the pages
+stay static and still change immediately.
 
 ---
 
@@ -106,6 +142,11 @@ as `lib/images/manifest.ts`. `components/ui/smash-image.tsx` reads that manifest
 ships with a real `width`/`height` and its box is reserved before a byte arrives. The hero's wall is
 preloaded with its exact `srcSet` from the document head.
 
+The same script owns the wordmark. `assets/source/smashr-logo-clean.svg` is the one drawing;
+`npm run assets` writes the three colourways in `public/brand/` from it — brand red, white and
+`currentColor` — then the two PNGs the share card and the schema.org `logo` need, then the icons
+and the favicon. To change the logo, replace that one file and re-run.
+
 Re-run `npm run assets` after changing anything in `assets/`.
 
 ### Content
@@ -114,6 +155,17 @@ Re-run `npm run assets` after changing anything in `assets/`.
 navigation), `menu.ts` (the menu), `story.ts` (brand copy), `legal.ts` (the legal documents). The
 JSON-LD in `lib/seo/jsonld.ts` is built from the same modules the pages render, so the machine-
 readable copy of the business cannot drift from the one a visitor sees.
+
+### Machine-readable copies
+
+`/schema.json` (schema.org JSON-LD for the business, the site and the whole menu) and `/llms.txt`
+(the same facts as prose, for answer engines) are **routes**, not files in `public/`. Both state
+the phone number, the opening hours and the menu, and all three are editable in `/admin` — a
+static copy would be wrong the first time one changed. Both are in the admin's `revalidatePath`
+list, so a save updates them with the pages.
+
+`cef review` looks for these as files and reports them missing; that is the only reason the SEO
+gate reads 75 rather than 90. See `.cef/memory/known-issues.md`.
 
 ### Consent
 
@@ -138,11 +190,12 @@ foodora and Wolt listings and moves with them; the page says so. Product photogr
 restaurant's — none of it is generated, and the three Wolt-only triple-patty sizes have no photo, so
 their cards are typographic rather than showing a picture of the smaller burger.
 
-**The legal documents are drafts.** All four carry a visible review notice and bracketed
-placeholders where a value can only come from the operator's company records — registration number,
-tax number, the data-protection contact, the hosting provider. They must be reviewed by a qualified
-legal professional and the placeholders filled before the site goes live. They are `noindex` until
-then.
+**The legal documents still need a professional read.** Every value that can only come from the
+operator's company records — registration number, tax number, the data-protection contact, the
+hosting provider — is read from the environment (see above), and unset ones render as bracketed
+placeholders. The text itself is a starting draft: have it reviewed by a qualified legal
+professional and fill the variables before the site goes live. The four documents are `noindex` —
+obligatory text is not a search target — while the index page at `/jogi-informaciok` is indexed.
 
 **Five craft findings stand deliberately.** `cef impeccable detect .` reports 0 blockers and 5
 majors, each recorded with its reasoning in `.cef/memory/decisions.md` — two mask gradients read as

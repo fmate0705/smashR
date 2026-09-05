@@ -51,7 +51,7 @@ export default async function OpengraphImage() {
       <img
         src={logoSrc}
         width={620}
-        height={232}
+        height={231}
         style={{ position: 'relative', marginTop: -20 }}
         alt=""
       />

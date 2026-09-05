@@ -5,7 +5,7 @@ import { gsap, useGSAP, MOTION_QUERY } from '@/lib/motion/gsap';
 import { Logo } from '@/components/ui/logo';
 import { ButtonLink } from '@/components/ui/button';
 import { ScrollCue } from '@/components/ui/scroll-cue';
-import { PinMark, PlatformMark } from '@/components/ui/platform-mark';
+import { PinMark } from '@/components/ui/platform-mark';
 import { responsiveImage, WIDTHS } from '@/lib/images/responsive';
 import { directionsUrl, orderLinks, site } from '@/content/site';
 
@@ -190,17 +190,28 @@ export function Hero() {
             'radial-gradient(circle at 50% 50%, #000 0%, #000 30%, rgb(0 0 0 / 0.55) 52%, transparent 74%)',
         }}
       >
+        {/* The gloss is an image element carrying the same srcSet and sizes as the matte wall, not a CSS
+            background. Both layers then resolve to the same variant at the same intrinsic size and
+            are framed by the identical `cover` calculation — a background could only ever be given
+            one fixed file, and the browser choosing a different width for the matte layer was
+            enough to put the two walls a few pixels out of register. */}
         <div
           ref={inner}
           className="absolute left-0 top-0"
-          style={{
-            width: 'var(--hero-w, 100vw)',
-            height: 'var(--hero-h, 100svh)',
-            backgroundImage: `image-set(url(${HIGHLIGHT.src}) 1x)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
+          style={{ width: 'var(--hero-w, 100vw)', height: 'var(--hero-h, 100svh)' }}
+        >
+          <img
+            src={HIGHLIGHT.src}
+            srcSet={HIGHLIGHT.srcSet}
+            sizes="100vw"
+            width={HIGHLIGHT.width}
+            height={HIGHLIGHT.height}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </div>
       </div>
 
       {/* Legibility scrims. Two linear washes at the top and bottom edges, where the navigation,
@@ -218,7 +229,7 @@ export function Hero() {
       <div className="relative flex flex-1 flex-col items-center justify-center px-[var(--smashr-gutter)] pb-28 pt-[calc(var(--smashr-nav-h)+6rem)] sm:pb-32 sm:pt-[calc(var(--smashr-nav-h)+8rem)]">
         <h1 className="w-full max-w-[min(50vw,54rem)] max-sm:max-w-[82vw]">
           <span className="sr-only">SmashR — {site.tagline} — smash burger Budapesten</span>
-          <Logo tone="red" priority decorative className="w-full" />
+          <Logo tone="red" priority decorative className="smashr-logo-shadow w-full" />
         </h1>
 
         <p className="smashr-display mt-12 text-center text-[clamp(0.95rem,2.4vw,1.75rem)] tracking-[0.22em] text-white sm:mt-16">
@@ -227,8 +238,7 @@ export function Hero() {
       </div>
 
       <div className="relative flex flex-col items-center gap-8 pb-10 sm:gap-9 sm:pb-12">
-        {/* Route planning first, then the two platforms in the order the venue prefers them. Each
-            carries its own mark, so the destination is recognised before the word is read. */}
+        {/* Route planning first, then the two platforms in the order the venue prefers them. */}
         <div className="flex flex-col items-center gap-3 px-[var(--smashr-gutter)] sm:flex-row sm:gap-4">
           <ButtonLink
             href={directionsUrl}
@@ -248,7 +258,6 @@ export function Hero() {
             className="w-full sm:w-auto"
             ariaLabel="Rendelés a foodorán, új lapon nyílik meg"
           >
-            <PlatformMark platform="foodora" />
             foodora
           </ButtonLink>
           <ButtonLink
@@ -259,7 +268,6 @@ export function Hero() {
             className="w-full sm:w-auto"
             ariaLabel="Rendelés a Wolton, új lapon nyílik meg"
           >
-            <PlatformMark platform="wolt" />
             Wolt
           </ButtonLink>
         </div>

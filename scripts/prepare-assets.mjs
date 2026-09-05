@@ -30,6 +30,16 @@ async function ensure(dir) {
 }
 
 /**
+ * How much larger the hero's tiles appear than in the generated frame.
+ *
+ * The wall was generated about twenty tiles across, which reads as texture at hero scale. Cropping
+ * to the centre 1/1.75 of the frame enlarges the tile without touching the photograph, and leaves
+ * 1573px of width — enough that a 1440-wide viewport is still scaling the image down, not up.
+ * A 2x crop was tried and left the wall visibly soft on a large display.
+ */
+const HERO_ZOOM = 1.75;
+
+/**
  * Reads one of the brand layer's channel-triplet colour tokens, e.g. `--smashr-red: 209 0 15`.
  *
  * The design tokens are the single source of truth for colour, including for the files this script
@@ -45,80 +55,10 @@ async function readBrandToken(name) {
   return { r: Number(r), g: Number(g), b: Number(b), alpha: 1 };
 }
 
-/** The paper ground's base tone. Warm off-white, close to uncoated newsprint. */
-const PAPER_BASE = [250, 246, 238];
-
-/**
- * Removes the large-scale lighting from a photographed sheet, keeping only its surface.
- *
- * A scan carries the curve of the paper and the fall-off of whatever lit it. Mirror-tiling that
- * turns a soft shadow into a symmetrical blotch that reads as a stain rather than as paper. This
- * subtracts a heavily blurred copy of the image from itself — a high-pass — which leaves the
- * fibre, the ghosted columns of type and the rules, then re-lays that detail over a flat tone.
- */
-async function flattenLighting(input, { strength = 1.35 } = {}) {
-  const grey = sharp(input).greyscale();
-  const { data, info } = await grey.raw().toBuffer({ resolveWithObject: true });
-  // Sigma large enough to hold only the lighting, not the type.
-  const { data: base } = await sharp(input)
-    .greyscale()
-    .blur(60)
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const out = Buffer.allocUnsafe(info.width * info.height * 3);
-  for (let i = 0; i < data.length; i += 1) {
-    // Signed detail around mid-grey, amplified, then applied to the flat paper tone.
-    const detail = ((data[i] ?? 0) - (base[i] ?? 0)) * strength;
-    for (let channel = 0; channel < 3; channel += 1) {
-      const value = (PAPER_BASE[channel] ?? 255) + detail;
-      out[i * 3 + channel] = value < 0 ? 0 : value > 255 ? 255 : value;
-    }
-  }
-
-  return sharp(out, { raw: { width: info.width, height: info.height, channels: 3 } })
-    .png()
-    .toBuffer();
-}
-
-/**
- * Crops an image to a clean interior and mirrors it into a 2x2 block.
- *
- * A photographed sheet has margins and a page edge; repeated as a background it tiles as a grid of
- * borders. Mirroring makes every outer edge of the block identical to the edge it will meet, so
- * the texture repeats with no visible join. The symmetry it introduces is invisible on an organic surface
- * at the opacity this ground is used at.
- */
-async function mirrorTile(input, inset = { left: 0.14, top: 0.1, width: 0.6, height: 0.78 }) {
-  const source = sharp(input, { limitInputPixels: false });
-  const { width = 0, height = 0 } = await source.metadata();
-  const cell = await flattenLighting(
-    await source
-      .extract({
-        left: Math.round(width * inset.left),
-        top: Math.round(height * inset.top),
-        width: Math.round(width * inset.width),
-        height: Math.round(height * inset.height),
-      })
-      .toBuffer(),
-  );
-
-  const { width: cw = 0, height: ch = 0 } = await sharp(cell).metadata();
-  const [flopped, flipped, both] = await Promise.all([
-    sharp(cell).flop().toBuffer(),
-    sharp(cell).flip().toBuffer(),
-    sharp(cell).flip().flop().toBuffer(),
-  ]);
-
-  return sharp({ create: { width: cw * 2, height: ch * 2, channels: 3, background: '#ffffff' } })
-    .composite([
-      { input: cell, left: 0, top: 0 },
-      { input: flopped, left: cw, top: 0 },
-      { input: flipped, left: 0, top: ch },
-      { input: both, left: cw, top: ch },
-    ])
-    .png()
-    .toBuffer();
+/** The same token as a hex string, for the places that take CSS colour rather than a sharp input. */
+async function readBrandHex(name) {
+  const { r, g, b } = await readBrandToken(name);
+  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`.toUpperCase();
 }
 
 /** Writes one WebP at a fixed width, preserving aspect ratio. */
@@ -153,31 +93,37 @@ async function main() {
   await ensure(OUT);
 
   // ── Hero ────────────────────────────────────────────────────────────────────
-  // Two layers of the same wall. The highlight layer is only ever seen through a small circular
-  // window that follows the pointer, so it can carry a lower quality than the base without any
-  // visible difference — which keeps the hero's total bytes close to a single background.
+  // Two photographs of the same wall — one matte, one wet-gloss — shot from the same camera so
+  // they superimpose. Both are cropped to the same centred window before resizing, which is what
+  // sets the tile scale: at full frame the wall reads as texture rather than as tile, and the
+  // crop below enlarges it by HERO_ZOOM without moving either layer relative to the other.
   //
-  // Both are cropped to the same centred half-frame before resizing. The generated wall is about
-  // twenty tiles across, which reads as texture rather than as tile at hero scale; taking the
-  // middle 50% doubles their apparent size, and doing it identically to both layers is what keeps
-  // the gloss aligned to the matte grout when the window moves over it.
+  // The two must be cropped identically and by the same code path. Anything that treats them
+  // differently — a different crop, a different output size, even a different element type at
+  // render — puts the wet grout a few pixels off the dry grout, and the effect depends entirely
+  // on those two grids being the same grid.
   const heroCrop = async (file) => {
     const image = sharp(path.join(GEN, file), { limitInputPixels: false });
     const { width = 0, height = 0 } = await image.metadata();
+    const keep = 1 / HERO_ZOOM;
     return image
       .extract({
-        left: Math.round(width * 0.25),
-        top: Math.round(height * 0.25),
-        width: Math.round(width * 0.5),
-        height: Math.round(height * 0.5),
+        left: Math.round((width * (1 - keep)) / 2),
+        top: Math.round((height * (1 - keep)) / 2),
+        width: Math.round(width * keep),
+        height: Math.round(height * keep),
       })
       .toBuffer();
   };
 
-  const heroBase = await heroCrop('hero-tile-base.png');
-  const heroHighlight = await heroCrop('hero-tile-highlight.png');
-  await responsive(heroBase, 'hero/tile-base', [1280, 1920, 2560], { quality: 80 });
-  await responsive(heroHighlight, 'hero/tile-highlight', [1280, 1920, 2560], { quality: 74 });
+  // 1920 is the last width worth writing: the crop leaves 1573px, and `webp()` does not upscale,
+  // so anything larger is the same file under another name.
+  await responsive(await heroCrop('hero-tile-base.png'), 'hero/tile-base', [1280, 1920], {
+    quality: 80,
+  });
+  await responsive(await heroCrop('hero-tile-highlight.png'), 'hero/tile-highlight', [1280, 1920], {
+    quality: 76,
+  });
 
   // The tile strip that edges every black section. Short, wide, and repeated on the x axis.
   const stripSource = await sharp(path.join(GEN, 'hero-tile-base.png'), { limitInputPixels: false })
@@ -186,15 +132,28 @@ async function main() {
   await webp(stripSource, 'texture/tile-strip.webp', 1600, { quality: 74 });
 
   // ── Surfaces ────────────────────────────────────────────────────────────────
-  // The newsprint ground: an old newspaper page photographed from the back, so its columns of
-  // type show through as unreadable grey rather than competing with the text set on top of it.
+  // The newsprint ground: the supplied collage of torn newspaper clippings.
   //
-  // The source is a whole sheet with margins and a page edge, which would tile as a visible grid
-  // of borders. It is cropped to a clean interior and then mirrored into a 2x2 block, so opposite
-  // edges match exactly and the background repeats without a visible join.
-  await webp(await mirrorTile(path.join(GEN, 'paper-newsprint.png')), 'texture/paper.webp', 1600, {
-    quality: 72,
-  });
+  // Toned rather than mirrored. Mirroring is what makes a photographed sheet tile without a join,
+  // but this source is built from big set headlines, and reflecting those produced an obvious
+  // kaleidoscope. A plain repeat leaves a seam instead — which, in a collage already made of cut
+  // edges at every angle, is the one artefact that looks like it belongs.
+  //
+  // The tone pass neutralises the yellowing and compresses the range hard: the paper goes to white
+  // and the ink to a light grey, so the section can carry the texture at a readable strength
+  // without the headlines fighting the copy set over them.
+  await webp(
+    await sharp(path.join(SRC, 'newspaper.webp'), { limitInputPixels: false })
+      .greyscale()
+      .linear(0.62, 113)
+      .toBuffer(),
+    'texture/paper.webp',
+    // Tiled at 340 CSS px by `Surface`, so 720 covers a 2x display exactly. It used to ship at
+    // 1800 — 120KB of newsprint downloaded on every page with a paper section to draw a third of
+    // it, once, very small.
+    720,
+    { quality: 78 },
+  );
 
   // ── Burger ──────────────────────────────────────────────────────────────────
   await responsive(path.join(GEN, 'burger-complete.png'), 'burger/complete', [720, 1200], {
@@ -215,13 +174,21 @@ async function main() {
 
   // The scroll-built burger. Each layer is trimmed to its own ink so the component can position
   // it by its real edges rather than by an arbitrary canvas, and every layer keeps its alpha.
+  // Two widths, because the stage is 13rem wide on a phone and 30rem on a desktop: a single
+  // 900px layer meant a phone downloading five images at four and a half times the size it drew
+  // them, which on this page is the difference between a third of a megabyte and a tenth of one.
   const layers = ['bun-top', 'patty-a', 'patty-b', 'veg', 'bun-bottom'];
   for (const layer of layers) {
-    await webp(path.join(GEN, 'cutout', `${layer}.png`), `burger/layer-${layer}.webp`, 900, {
-      quality: 86,
-      alpha: true,
-      trim: true,
-    });
+    await responsive(
+      path.join(GEN, 'cutout', `${layer}.png`),
+      `burger/layer-${layer}`,
+      [480, 900],
+      {
+        quality: 86,
+        alpha: true,
+        trim: true,
+      },
+    );
   }
 
   // ── Photography ─────────────────────────────────────────────────────────────
@@ -271,6 +238,52 @@ async function main() {
     .png({ palette: true, quality: 80 })
     .toFile(path.join(OUT, 'og/wall.png'));
   record('/images/og/wall.png', ogWall);
+
+  // ── Brand wordmark ──────────────────────────────────────────────────────────
+  // Three colourways from one drawing. The supplied artwork is a single compound path with an
+  // even-odd fill — that rule is what keeps the counters in the S, the a and the R open — so each
+  // colourway is the same path under a different fill and they cannot drift apart. The red comes
+  // from the brand token, not from whatever red the source file was exported with: a wordmark a
+  // shade off the buttons beside it reads as a mistake.
+  const artwork = await readFile(path.join(SRC, 'smashr-logo-clean.svg'), 'utf8');
+  const viewBox = /viewBox="([^"]+)"/.exec(artwork)?.[1];
+  const outline = /<path[^>]*\sd="([^"]+)"/.exec(artwork)?.[1];
+  const fillRule = /fill-rule="([^"]+)"/.exec(artwork)?.[1] ?? 'nonzero';
+  if (viewBox === undefined || outline === undefined) {
+    throw new Error('prepare-assets: assets/source/smashr-logo-clean.svg has no viewBox or path');
+  }
+  const wordmark = (fill) =>
+    [
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" role="img" aria-label="SmashR" fill="${fill}">`,
+      `<path fill-rule="${fillRule}" d="${outline}"/>`,
+      '</svg>',
+      '',
+    ].join('\n');
+
+  await ensure(path.join(ROOT, 'public/brand'));
+  const tones = [
+    ['', await readBrandHex('--smashr-red')],
+    ['-white', '#FFFFFF'],
+    ['-mono', 'currentColor'],
+  ];
+  for (const [tone, fill] of tones) {
+    await writeFile(path.join(ROOT, `public/brand/smashr-logo${tone}.svg`), wordmark(fill), 'utf8');
+  }
+
+  // ── Brand rasters ───────────────────────────────────────────────────────────
+  // The wordmark is an SVG everywhere the page draws it. Two consumers cannot take one: the Open
+  // Graph route, whose renderer rasterizes SVG unreliably, and the schema.org `logo` a search
+  // engine fetches. Both are generated from the vector here rather than committed by hand, so a
+  // new set of curves cannot leave a stale raster behind on the share card.
+  for (const tone of ['', '-white']) {
+    const info = await sharp(path.join(ROOT, `public/brand/smashr-logo${tone}.svg`), {
+      density: 600,
+    })
+      .resize({ width: 1600 })
+      .png()
+      .toFile(path.join(ROOT, `public/brand/smashr-logo${tone}.png`));
+    record(`/brand/smashr-logo${tone}.png`, info);
+  }
 
   // ── Icons ───────────────────────────────────────────────────────────────────
   // A solid red plate behind the mark: the logo is a script wordmark with thin strokes, and a

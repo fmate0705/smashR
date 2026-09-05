@@ -21,7 +21,7 @@
       "gate": "impeccable",
       "severity": "major",
       "message": "IM-046 Wide letter spacing on body text — `<p className=\"smashr-display mt-12 text-center text-[clamp(0.95rem,2.4vw,1.75rem)] tracking-[0.22em]`",
-      "file": "components/sections/hero.tsx:224",
+      "file": "components/sections/hero.tsx:235",
       "recommendation": "Reserve wide tracking for short uppercase labels."
     },
     {
@@ -29,7 +29,7 @@
       "gate": "impeccable",
       "severity": "major",
       "message": "IM-039 Tight line height — `line-height: 0.95;`",
-      "file": "styles/brand.css:104",
+      "file": "styles/brand.css:155",
       "recommendation": "Set body leading between 1.5 and 1.7 so lines have room to breathe."
     },
     {
@@ -37,7 +37,7 @@
       "gate": "impeccable",
       "severity": "major",
       "message": "IM-039 Tight line height — `line-height: 0.9;`",
-      "file": "styles/brand.css:109",
+      "file": "styles/brand.css:160",
       "recommendation": "Set body leading between 1.5 and 1.7 so lines have room to breathe."
     },
     {
@@ -81,33 +81,89 @@
     {
       "id": "seo-11",
       "gate": "seo",
+      "severity": "major",
+      "message": "Missing SEO artifact \"public/llms.txt\".",
+      "file": "public/llms.txt"
+    },
+    {
+      "id": "seo-12",
+      "gate": "seo",
       "severity": "minor",
       "message": "Missing SEO artifact \"public/schema.json\".",
       "file": "public/schema.json"
     },
     {
-      "id": "content-12",
-      "gate": "content",
-      "severity": "blocker",
-      "message": "Placeholder/lorem-ipsum content shipped.",
-      "file": "content/legal.ts"
+      "id": "seo-13",
+      "gate": "seo",
+      "severity": "minor",
+      "message": "Page declares no canonical URL.",
+      "file": "app/admin/login/page.tsx"
     },
     {
-      "id": "content-13",
+      "id": "content-14",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/rolunk\" has no matching page.",
+      "file": "app/(site)/page.tsx"
+    },
+    {
+      "id": "content-15",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/\" has no matching page.",
+      "file": "app/admin/page.tsx"
+    },
+    {
+      "id": "content-16",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/etlap\" has no matching page.",
+      "file": "components/sections/menu-teaser.tsx"
+    },
+    {
+      "id": "content-17",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/etlap\" has no matching page.",
+      "file": "components/sections/not-found-content.tsx"
+    },
+    {
+      "id": "content-18",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/\" has no matching page.",
+      "file": "components/sections/not-found-content.tsx"
+    },
+    {
+      "id": "content-19",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/\" has no matching page.",
+      "file": "components/site/footer.tsx"
+    },
+    {
+      "id": "content-20",
+      "gate": "content",
+      "severity": "minor",
+      "message": "Internal link \"/\" has no matching page.",
+      "file": "components/site/navbar.tsx"
+    },
+    {
+      "id": "content-21",
       "gate": "content",
       "severity": "nit",
       "message": "Grammar and tone require a human read-through before approval.",
       "recommendation": "Proofread all shipped copy."
     },
     {
-      "id": "brand-14",
+      "id": "brand-22",
       "gate": "brand",
       "severity": "nit",
       "message": "Brand alignment (voice, imagery, tone) needs a human sign-off.",
       "recommendation": "Have the brand owner review before approval."
     },
     {
-      "id": "legal-15",
+      "id": "legal-23",
       "gate": "legal",
       "severity": "major",
       "message": "Generated legal text requires review by a qualified legal professional.",

@@ -22,6 +22,27 @@ services:
     environment:
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
       NEXT_TELEMETRY_DISABLED: '1'
+      # Passed through one by one from the host .env rather than with env_file, which
+      # would also hand the production image this project's NODE_ENV=development and
+      # PORT=3000 and quietly stop it being a production check at all.
+      SMASHR_ADMIN_USER: ${SMASHR_ADMIN_USER:-}
+      SMASHR_ADMIN_PASSWORD_HASH: ${SMASHR_ADMIN_PASSWORD_HASH:-}
+      SMASHR_SESSION_SECRET: ${SMASHR_SESSION_SECRET:-}
+      SMASHR_COMPANY_NAME: ${SMASHR_COMPANY_NAME:-}
+      SMASHR_COMPANY_ADDRESS: ${SMASHR_COMPANY_ADDRESS:-}
+      SMASHR_COMPANY_NUMBER: ${SMASHR_COMPANY_NUMBER:-}
+      SMASHR_TAX_NUMBER: ${SMASHR_TAX_NUMBER:-}
+      SMASHR_REGISTRATION_COURT: ${SMASHR_REGISTRATION_COURT:-}
+      SMASHR_REPRESENTATIVE: ${SMASHR_REPRESENTATIVE:-}
+      SMASHR_CONTACT_EMAIL: ${SMASHR_CONTACT_EMAIL:-}
+      SMASHR_PRIVACY_EMAIL: ${SMASHR_PRIVACY_EMAIL:-}
+      SMASHR_HOSTING_NAME: ${SMASHR_HOSTING_NAME:-}
+      SMASHR_HOSTING_ADDRESS: ${SMASHR_HOSTING_ADDRESS:-}
+      SMASHR_HOSTING_CONTACT: ${SMASHR_HOSTING_CONTACT:-}
+    volumes:
+      # Same content volume as the deploy compose file, so a local check exercises
+      # the admin's write path against a real mount rather than the image's filesystem.
+      - local_content:/data
     ports:
       # Host 3000 -> the container's port 80 (what the platform routes to).
       - '3000:80'
@@ -59,5 +80,6 @@ services:
       - '3001:3000'
 
 volumes:
+  local_content:
   dev_node_modules:
   dev_next_cache:

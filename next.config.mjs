@@ -66,6 +66,13 @@ const nextConfig = {
         source: '/brand/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
+      {
+        // The icons are written by the same pipeline and change only with the wordmark, but they
+        // sit at the public root rather than under a prefix — so without this they are served
+        // `max-age=0` and re-fetched on every page of a visit.
+        source: '/:file(favicon.png|icon-192.png|icon-512.png|manifest.webmanifest)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }],
+      },
     ];
   },
 };

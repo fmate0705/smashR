@@ -54,8 +54,8 @@ export function ProductCard({
               alt={item.imageAlt ?? item.name}
               priority={priority}
               className={cn(
-                'aspect-square object-cover transition-transform duration-slow ease-emphasized',
-                'group-hover:scale-[1.04] motion-reduce:group-hover:scale-100',
+                'aspect-square object-cover object-center transition-transform duration-slow',
+                'ease-emphasized group-hover:scale-[1.04] motion-reduce:group-hover:scale-100',
               )}
             />
           </div>

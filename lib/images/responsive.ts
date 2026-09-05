@@ -46,9 +46,14 @@ export function responsiveImage(base: ImageKey, widths: readonly number[]): Resp
 
 /** The widths the pipeline writes, by asset family. Kept beside the pipeline's own list. */
 export const WIDTHS = {
-  hero: [1280, 1920, 2560],
+  // Two, not three: the cropped hero source is 1573px wide and the pipeline does not upscale, so
+  // a third width would land on disk as a byte-identical copy of the second and advertise the
+  // same descriptor — a candidate the browser can never choose.
+  hero: [1280, 1920],
   story: [960, 1600, 2200],
   storySmall: [960, 1600],
   burger: [720, 1200],
+  // The scroll-built stack. 480 is a phone at 2x, 900 is the source and covers everything above.
+  burgerLayer: [480, 900],
   menu: [400, 800],
 } as const;

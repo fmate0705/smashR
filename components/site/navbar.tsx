@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Logo } from '@/components/ui/logo';
 import { ButtonLink } from '@/components/ui/button';
-import { PinMark, PlatformMark } from '@/components/ui/platform-mark';
+import { PinMark } from '@/components/ui/platform-mark';
 import { Container } from '@/components/sections/surface';
 import { directionsUrl, navigation, orderLinks } from '@/content/site';
 import { cn } from '@/lib/cn';
@@ -86,10 +86,10 @@ export function Navbar() {
       <Container width="wide">
         <div
           className={cn(
-            'transition-[background-color,border-color,backdrop-filter,padding]',
+            'transition-[background-color,border-color,padding]',
             'duration-normal ease-emphasized',
             contained
-              ? 'border border-white/[0.14] bg-black/90 px-4 backdrop-blur-md sm:px-5'
+              ? 'border border-white/[0.14] bg-black px-4 sm:px-5'
               : 'border border-transparent bg-transparent px-0',
           )}
         >
@@ -149,8 +149,7 @@ export function Navbar() {
                 className="hidden sm:inline-flex"
                 ariaLabel="Rendelés a foodorán, új lapon nyílik meg"
               >
-                <PlatformMark platform="foodora" />
-                <span className="hidden xl:inline">foodora</span>
+                foodora
               </ButtonLink>
 
               <ButtonLink
@@ -161,8 +160,7 @@ export function Navbar() {
                 className="hidden sm:inline-flex"
                 ariaLabel="Rendelés a Wolton, új lapon nyílik meg"
               >
-                <PlatformMark platform="wolt" />
-                <span className="hidden xl:inline">Wolt</span>
+                Wolt
               </ButtonLink>
 
               <button
@@ -256,11 +254,9 @@ function MobileMenu({ open, isCurrent, ref }: MobileMenuProps) {
               Útvonal
             </ButtonLink>
             <ButtonLink href={orderLinks.foodora.href} external variant="secondary" size="md">
-              <PlatformMark platform="foodora" />
               foodora
             </ButtonLink>
             <ButtonLink href={orderLinks.wolt.href} external variant="secondary" size="md">
-              <PlatformMark platform="wolt" />
               Wolt
             </ButtonLink>
           </div>

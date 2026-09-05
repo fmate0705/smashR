@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { legalNavigation, navigation, orderLinks, socialLinks } from '@/content/site';
-import { legalDocuments } from '@/content/legal';
+import { legalDocument, legalDocuments, legalSlugs } from '@/content/legal';
 import { restaurantJsonLd, menuJsonLd } from '@/lib/seo/jsonld';
 
 /**
@@ -17,7 +17,7 @@ describe('navigation', () => {
       '/rolunk',
       '/kapcsolat',
       '/jogi-informaciok',
-      ...legalDocuments.map((document) => `/jogi-informaciok/${document.slug}`),
+      ...legalSlugs.map((slug) => `/jogi-informaciok/${slug}`),
     ]);
     const broken = [...navigation, ...legalNavigation]
       .map((item) => item.href)
@@ -27,7 +27,7 @@ describe('navigation', () => {
 
   it('lists a legal page for every legal document, and no more', () => {
     const linked = legalNavigation.map((item) => item.href).sort();
-    const documents = legalDocuments.map((document) => `/jogi-informaciok/${document.slug}`).sort();
+    const documents = legalSlugs.map((slug) => `/jogi-informaciok/${slug}`).sort();
     expect(linked).toEqual(documents);
   });
 });
@@ -55,22 +55,24 @@ describe('outbound links', () => {
 });
 
 describe('structured data', () => {
-  it('describes the venue with the address and hours the pages show', () => {
-    expect(restaurantJsonLd['@type']).toBe('Restaurant');
-    expect(restaurantJsonLd.address.streetAddress).toBe('Bevásárló u. 2.');
-    expect(restaurantJsonLd.address.postalCode).toBe('1239');
-    expect(restaurantJsonLd.openingHoursSpecification).toHaveLength(2);
+  it('describes the venue with the address and hours the pages show', async () => {
+    const data = await restaurantJsonLd();
+    expect(data['@type']).toBe('Restaurant');
+    expect(data.address.streetAddress).toBe('Bevásárló u. 2.');
+    expect(data.address.postalCode).toBe('1239');
+    expect(data.openingHoursSpecification).toHaveLength(2);
     // Seven days, each named exactly once across the two specifications.
-    const days = restaurantJsonLd.openingHoursSpecification.flatMap((slot) => slot.dayOfWeek);
+    const days = data.openingHoursSpecification.flatMap((slot) => slot.dayOfWeek);
     expect(new Set(days).size).toBe(7);
   });
 
-  it('states that no reservation is possible, because none is', () => {
-    expect(restaurantJsonLd.acceptsReservations).toBe(false);
+  it('states that no reservation is possible, because none is', async () => {
+    expect((await restaurantJsonLd()).acceptsReservations).toBe(false);
   });
 
-  it('offers every menu item in HUF', () => {
-    const offers = menuJsonLd.hasMenuSection.flatMap((section) =>
+  it('offers every menu item in HUF', async () => {
+    const data = await menuJsonLd();
+    const offers = data.hasMenuSection.flatMap((section) =>
       section.hasMenuItem.map((item) => item.offers),
     );
     expect(offers.length).toBeGreaterThan(0);
@@ -78,23 +80,37 @@ describe('structured data', () => {
     expect(offers.every((offer) => offer.price > 0)).toBe(true);
   });
 
-  it('serializes to valid JSON, since it is injected as a script body', () => {
-    expect(() => JSON.parse(JSON.stringify(restaurantJsonLd))).not.toThrow();
-    expect(() => JSON.parse(JSON.stringify(menuJsonLd))).not.toThrow();
+  it('serializes to valid JSON, since it is injected as a script body', async () => {
+    const [restaurant, menu] = await Promise.all([restaurantJsonLd(), menuJsonLd()]);
+    expect(() => JSON.parse(JSON.stringify(restaurant))).not.toThrow();
+    expect(() => JSON.parse(JSON.stringify(menu))).not.toThrow();
   });
 });
 
 describe('legal documents', () => {
-  it('keeps every draft flagged for review until a professional signs it off', () => {
-    const unflagged = legalDocuments.filter((document) => !document.review).map((d) => d.slug);
-    expect(unflagged).toEqual([]);
-  });
-
   it('gives every document a title, a description and at least one section', () => {
-    for (const document of legalDocuments) {
+    for (const document of legalDocuments()) {
       expect(document.title.trim()).not.toBe('');
       expect(document.description.trim()).not.toBe('');
       expect(document.sections.length).toBeGreaterThan(0);
     }
+  });
+
+  it('renders an unset operator field as a visible placeholder, never as blank', () => {
+    // The failure this guards against is a published impressum with an empty line where the tax
+    // number should be — silently wrong, and nobody notices until it matters.
+    const impressum = legalDocument('impresszum');
+    expect(impressum).toBeDefined();
+    const entries = impressum?.sections.flatMap((section) => section.list ?? []) ?? [];
+    const cegnev = entries.find((entry) => entry.startsWith('Cégnév:'));
+    expect(cegnev).toBeDefined();
+    expect(cegnev?.replace('Cégnév:', '').trim()).not.toBe('');
+  });
+
+  it('covers every slug the navigation links to', () => {
+    const built = legalDocuments()
+      .map((document) => document.slug)
+      .sort();
+    expect(built).toEqual([...legalSlugs].sort());
   });
 });

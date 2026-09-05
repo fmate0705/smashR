@@ -2,7 +2,8 @@
 
 import { useRef } from 'react';
 import { gsap, useGSAP, MOTION_QUERY } from '@/lib/motion/gsap';
-import { imageSize, type ImageKey } from '@/lib/images/manifest';
+import { type ImageKey } from '@/lib/images/manifest';
+import { responsiveImage, WIDTHS } from '@/lib/images/responsive';
 import { cn } from '@/lib/cn';
 
 /**
@@ -32,12 +33,25 @@ interface BurgerLayer {
  * The timeline plays it backwards, so the bottom bun is laid down first and the crown lands last.
  */
 const LAYERS: readonly BurgerLayer[] = [
-  { src: '/images/burger/layer-bun-top.webp', alt: '', width: 84, assembled: 2 },
-  { src: '/images/burger/layer-patty-a.webp', alt: '', width: 88, assembled: 26 },
-  { src: '/images/burger/layer-patty-b.webp', alt: '', width: 90, assembled: 36 },
-  { src: '/images/burger/layer-veg.webp', alt: '', width: 94, assembled: 50 },
-  { src: '/images/burger/layer-bun-bottom.webp', alt: '', width: 84, assembled: 74 },
+  { src: '/images/burger/layer-bun-top', alt: '', width: 84, assembled: 12 },
+  { src: '/images/burger/layer-patty-a', alt: '', width: 88, assembled: 26 },
+  { src: '/images/burger/layer-patty-b', alt: '', width: 90, assembled: 33 },
+  // Narrower than the patties it sits under, which also makes it shorter: the cut-out's ink box is
+  // as tall as the lettuce hangs, and that height is what was holding the base away from the stack.
+  { src: '/images/burger/layer-veg', alt: '', width: 88, assembled: 42 },
+  // The one gap that stays open. The base is the first part down and therefore the bottom layer,
+  // and the lettuce above it hangs far enough to hide it entirely if it sits any closer.
+  { src: '/images/burger/layer-bun-bottom', alt: '', width: 84, assembled: 70 },
 ];
+
+/**
+ * What the stage actually measures, breakpoint by breakpoint — the container's max width times the
+ * tilt scale times the widest layer. Written out rather than approximated in `vw` because the
+ * stage is a fixed measure at every breakpoint, not a fraction of the viewport, and a `vw` guess
+ * here is how a phone ends up downloading the desktop file.
+ */
+const LAYER_SIZES =
+  '(min-width: 1024px) 30rem, (min-width: 768px) 22rem, (min-width: 640px) 18rem, 13rem';
 
 /** How far above its landing spot a layer starts, as a multiple of its own height. */
 const DROP_CLEARANCE = 1.25;
@@ -88,16 +102,22 @@ export function SmashBuild() {
         const dropFrom = (_index: number, target: HTMLElement) =>
           -(target.offsetTop + target.offsetHeight * DROP_CLEARANCE);
 
+        const stagger = { each: 0.2, from: 'end' } as const;
+
         timeline.fromTo(
           '[data-layer]',
-          { y: dropFrom, autoAlpha: 0 },
-          {
-            y: 0,
-            autoAlpha: 1,
-            ease: 'power2.out',
-            duration: 1,
-            stagger: { each: 0.2, from: 'end' },
-          },
+          { y: dropFrom },
+          { y: 0, ease: 'power2.out', duration: 1, stagger },
+          0,
+        );
+
+        // The fade runs as its own tween, a third as long as the fall. A part is solid well before
+        // it lands, so the eye follows an object dropping rather than an image resolving — GSAP
+        // has no per-property duration, so this is a second tween rather than an option.
+        timeline.fromTo(
+          '[data-layer]',
+          { autoAlpha: 0 },
+          { autoAlpha: 1, ease: 'power1.out', duration: 0.32, stagger },
           0,
         );
 
@@ -198,16 +218,18 @@ function BurgerStage() {
       aria-label="Egy SmashR burger rétegei: alsó bucka házi szósszal, saláta, paradicsom és lilahagyma, két smashelt marhahúspogácsa olvadt cheddar sajttal, felül a pirított bucka."
     >
       {/* The tilt, and the scale that keeps a rotated square inside its own box. */}
-      <div className="absolute inset-0 rotate-[-25deg] scale-[0.74] lg:scale-[0.82]">
-        {LAYERS.map((layer) => {
-          const size = imageSize(layer.src);
+      <div className="absolute inset-0 rotate-[10deg] scale-[0.78] lg:scale-[0.92]">
+        {LAYERS.map((layer, index) => {
+          const image = responsiveImage(layer.src, WIDTHS.burgerLayer);
           return (
             <img
               key={layer.src}
               data-layer
-              src={layer.src}
-              width={size.width}
-              height={size.height}
+              src={image.src}
+              srcSet={image.srcSet}
+              sizes={LAYER_SIZES}
+              width={image.width}
+              height={image.height}
               alt={layer.alt}
               aria-hidden="true"
               loading="lazy"
@@ -220,6 +242,10 @@ function BurgerStage() {
                 width: `${layer.width}%`,
                 marginLeft: `${-layer.width / 2}%`,
                 top: `${layer.assembled}%`,
+                // Whatever is laid down last sits on top. The array runs crown-first and the
+                // timeline plays it backwards, so reversing the index gives the crown — the last
+                // part to arrive — the highest layer, and the base the lowest.
+                zIndex: LAYERS.length - index,
               }}
             />
           );

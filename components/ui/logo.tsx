@@ -5,8 +5,8 @@ const TONE_SRC = {
   white: '/brand/smashr-logo-white.svg',
 } as const;
 
-/** The mark's own proportions, from the tightened viewBox. Used to reserve its box exactly. */
-const RATIO = { width: 1038, height: 389 } as const;
+/** The mark's own proportions, straight from its viewBox. Used to reserve its box exactly. */
+const RATIO = { width: 1742, height: 650 } as const;
 
 interface LogoProps {
   readonly tone?: keyof typeof TONE_SRC;
@@ -22,10 +22,12 @@ interface LogoProps {
 /**
  * The SmashR wordmark.
  *
- * The source artwork arrived as a JPEG on a white plate; the shipped mark is the vector, whose
- * paths carry no background at all — so it sits directly on tile, on beige, on paper, and never
- * needs a white card behind it. It stays an SVG at every size because the script's thin joins
- * break up badly under raster scaling at hero scale.
+ * The mark is a vector with no background at all — so it sits directly on tile, on beige, on
+ * paper, and never needs a white card behind it. It stays an SVG at every size because the
+ * script's thin joins break up badly under raster scaling at hero scale.
+ *
+ * One compound path with an even-odd fill, drawn from the supplied artwork; the three colourways
+ * in `public/brand/` are the same path with a different fill, so they can never drift apart.
  */
 export function Logo({ tone = 'red', className, decorative = false, priority = false }: LogoProps) {
   return (

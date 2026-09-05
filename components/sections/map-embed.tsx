@@ -17,46 +17,52 @@ export function MapEmbed() {
   const { allows, openWindow } = useConsent();
 
   return (
-    // The frame always sits on a black plate, whatever the section around it is, so it carries the
-    // dark ink pair itself — which is what keeps the refusal state's outlined button visible when
-    // the surrounding surface is beige.
-    <div className="relative aspect-[4/3] w-full overflow-hidden border border-white/[0.12] bg-white/[0.03] [--smashr-ground:0_0_0] [--smashr-ink:255_255_255] sm:aspect-[16/9] lg:aspect-[16/10]">
-      {allows('functional') ? (
-        <iframe
-          src={mapEmbedUrl}
-          title={`Térkép: ${site.name}, ${site.address.full}`}
-          loading="lazy"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      ) : (
-        <div className="absolute inset-0 flex flex-col items-start justify-end gap-5 p-7 sm:p-9">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 opacity-25"
-            style={{
-              backgroundImage: 'url(/images/texture/tile-strip.webp)',
-              backgroundSize: 'auto 55%',
-            }}
+    // An offset red rule rather than a plate, matching the story photographs — the map is a
+    // picture on the surface, not an object sitting on a tray. The frame keeps the dark ink pair
+    // so the refusal state's outlined button stays visible over the dark placeholder.
+    <div className="relative">
+      <div
+        aria-hidden="true"
+        className="absolute -bottom-4 -right-4 h-full w-full border-2 border-primary sm:-bottom-6 sm:-right-6"
+      />
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-black [--smashr-ground:0_0_0] [--smashr-ink:255_255_255] sm:aspect-[16/10] lg:aspect-[16/9]">
+        {allows('functional') ? (
+          <iframe
+            src={mapEmbedUrl}
+            title={`Térkép: ${site.name}, ${site.address.full}`}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full border-0"
           />
-          <div>
-            <p className="smashr-display text-xl text-white sm:text-2xl">{site.address.full}</p>
-            <p className="mt-3 max-w-[42ch] text-sm leading-relaxed text-white/60">
-              A beágyazott Google-térkép betöltése adatokat küld a Google felé, ezért csak a
-              hozzájárulásod után jelenik meg. Útvonalat enélkül is tudsz tervezni.
-            </p>
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-start justify-end gap-5 p-7 sm:p-9">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 opacity-25"
+              style={{
+                backgroundImage: 'url(/images/texture/tile-strip.webp)',
+                backgroundSize: 'auto 55%',
+              }}
+            />
+            <div>
+              <p className="smashr-display text-xl text-white sm:text-2xl">{site.address.full}</p>
+              <p className="mt-3 max-w-[42ch] text-sm leading-relaxed text-white/60">
+                A beágyazott Google-térkép betöltése adatokat küld a Google felé, ezért csak a
+                hozzájárulásod után jelenik meg. Útvonalat enélkül is tudsz tervezni.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <ButtonLink href={directionsUrl} external size="sm">
+                Útvonaltervezés
+              </ButtonLink>
+              <Button type="button" variant="secondary" size="sm" onClick={openWindow}>
+                Térkép engedélyezése
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <ButtonLink href={directionsUrl} external size="sm">
-              Útvonaltervezés
-            </ButtonLink>
-            <Button type="button" variant="secondary" size="sm" onClick={openWindow}>
-              Térkép engedélyezése
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
