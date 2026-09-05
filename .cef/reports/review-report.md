@@ -1,6 +1,6 @@
 # smashr — Review Report
 
-> Reviewed 2026-09-05T08:25:38.590Z. Generation does not imply approval.
+> Reviewed 2026-09-05T08:40:39.102Z. Generation does not imply approval.
 
 **Overall 89/100 · Readiness 86/100 · Recommendation: CONDITIONAL**
 

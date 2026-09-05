@@ -9,9 +9,7 @@ import type { Metadata } from 'next';
 import { pageMetadata } from '@/lib/seo/metadata';
 import { PageHeader } from '@/components/sections/page-header';
 import { LocationSection } from '@/components/sections/location-section';
-import { PaperSection, Container } from '@/components/sections/surface';
-import { SocialCards } from '@/components/sections/social-cards';
-import { Reveal } from '@/components/motion';
+import { SocialSection } from '@/components/sections/social-section';
 import { breadcrumbJsonLd } from '@/lib/seo/jsonld';
 import { orderLinks, site } from '@/content/site';
 import { absoluteUrl } from '@/lib/site-url';
@@ -68,51 +66,32 @@ export default function ContactPage() {
           same four facts, which meant two layouts to keep in step; there is now one. */}
       <LocationSection heading="Itt találsz minket" waveTop={false} />
 
-      <PaperSection ariaLabelledBy="kozosseg-cim">
-        <Container>
-          <Reveal className="max-w-[52ch]">
-            <h2
-              id="kozosseg-cim"
-              className="smashr-display text-balance text-[clamp(1.9rem,4.4vw,3rem)]"
+      <SocialSection
+        footer={
+          <p className="max-w-[70ch] text-sm leading-relaxed text-black/55">
+            A pult a bevásárlóközpont oldalánál található. Ha rendelnél, a{' '}
+            <a
+              href={orderLinks.foodora.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 transition-colors duration-fast hover:text-primary"
             >
-              Kövess minket
-            </h2>
-            <p className="mt-5 text-base leading-relaxed text-black/60 sm:text-lg">
-              Ami a lapra kerül, az többnyire itt is megjelenik. Új tételek, nyitvatartás-változás,
-              és amit a pult mögött épp csinálunk.
-            </p>
-          </Reveal>
-
-          <Reveal className="mt-10">
-            <SocialCards />
-          </Reveal>
-
-          <Reveal className="mt-12">
-            <p className="max-w-[70ch] text-sm leading-relaxed text-black/55">
-              A pult a bevásárlóközpont oldalánál található. Ha rendelnél, a{' '}
-              <a
-                href={orderLinks.foodora.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 transition-colors duration-fast hover:text-primary"
-              >
-                foodora
-              </a>{' '}
-              és a{' '}
-              <a
-                href={orderLinks.wolt.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 transition-colors duration-fast hover:text-primary"
-              >
-                Wolt
-              </a>{' '}
-              is kiszállít a környékre — a mindenkori kiszállítási díj és idő a platformok oldalán
-              látható.
-            </p>
-          </Reveal>
-        </Container>
-      </PaperSection>
+              foodora
+            </a>{' '}
+            és a{' '}
+            <a
+              href={orderLinks.wolt.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-4 transition-colors duration-fast hover:text-primary"
+            >
+              Wolt
+            </a>{' '}
+            is kiszállít a környékre — a mindenkori kiszállítási díj és idő a platformok oldalán
+            látható.
+          </p>
+        }
+      />
     </>
   );
 }

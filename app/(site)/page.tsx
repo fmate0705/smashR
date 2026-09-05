@@ -1,7 +1,7 @@
 /**
  * Page: Főoldal
  * Purpose: Mutassa be a márkát, és vezesse a látogatót a rendelésig vagy a helyszínig.
- * Sections: hero, smash-build, menu teaser, story, location
+ * Sections: hero, smash-build, menu teaser, story, social, location
  * SEO: importance high, schema Restaurant (root layout) + Breadcrumb
  * Performance goals: LCP <= 2500ms, CLS <= 0.1, INP <= 200ms
  */
@@ -13,6 +13,7 @@ import { HeroStage } from '@/components/sections/hero-stage';
 import { SmashBuild } from '@/components/sections/smash-build';
 import { MenuTeaser } from '@/components/sections/menu-teaser';
 import { StorySection } from '@/components/sections/story-section';
+import { SocialSection } from '@/components/sections/social-section';
 import { LocationSection } from '@/components/sections/location-section';
 import { BeigeSection } from '@/components/sections/surface';
 import { responsiveImage, WIDTHS } from '@/lib/images/responsive';
@@ -91,6 +92,8 @@ export default function HomePage() {
             </Link>
           }
         />
+
+        <SocialSection />
 
         <LocationSection />
       </div>
