@@ -22,6 +22,14 @@ interface LocationSectionProps {
  * The heading is sized against its column rather than against the viewport. At the section scale
  * it would be wider than the column at every desktop width and would run over the map; capped
  * where it is, the longest of the headings this block carries wraps to two lines instead.
+ *
+ * The 2.25rem ceiling is measured, not chosen. The column is capped at 26rem, and above roughly
+ * 1770px the type stops growing with the viewport while the column keeps pace with the root size —
+ * so the ratio between them freezes. At the previous 2.6rem the étlap's "Kiválasztottad?" came out
+ * wider than the column it sits in, and `overflow-wrap` did what it is there for and split the word
+ * down the middle: KIVÁLASZTOTTA / D? VIDD. Every heading this block carries now fits its column
+ * with room to spare at every width from 390px to 2560px, the tightest by 7%. `overflow-wrap`
+ * stays as the last resort — a future heading running into the map would be worse than a break.
  */
 export async function LocationSection({
   id,
@@ -37,7 +45,7 @@ export async function LocationSection({
           <div className="flex flex-col gap-7">
             <h2
               id="hol-cim"
-              className="smashr-display smashr-display-xl max-w-full text-balance [overflow-wrap:break-word] text-[clamp(1.75rem,2.6vw,2.6rem)]"
+              className="smashr-display smashr-display-xl max-w-full text-balance [overflow-wrap:break-word] text-[clamp(1.75rem,2.6vw,2.25rem)]"
             >
               {heading}
             </h2>
